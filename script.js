@@ -19,6 +19,20 @@ function divide(a, b) {
 }
 
 function operate(operator, a, b) {
+    if (typeof a !== Number) {
+        a = parseFloat(a);
+        if (isNaN(a)) {
+            return "ERROR";
+        }
+    }
+
+    if (typeof b !== Number) {
+        b = parseFloat(b);
+        if (isNaN(b)) { 
+            return "ERROR";
+        }
+    }
+
     switch (operator) {
         case "+": return add(a, b);
         case "-": return subtract(a, b);
@@ -76,7 +90,20 @@ function onOperatorClicked(value) {
         case "×": operator = "*"; break;
         case "−": operator = "-"; break;
         case "+": operator = "+"; break;
-        case "=": operator = "="; break;
+
+        case "=":
+            if (lhs.length > 0 && rhs.length > 0) {
+                lhs = operate(operator, lhs, rhs).toString();
+                rhs = "";
+                operator = "";
+
+                if (lhs.length > 4) {
+                    lhs = (Math.round(parseFloat(lhs) * 1000) / 1000).toString();
+                }
+
+                syncDisplay();
+            }
+            break;
         default: 
             console.log("Invalid operator");
             return;
