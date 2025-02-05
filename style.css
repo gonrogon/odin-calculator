@@ -22,7 +22,7 @@ body {
     color: #444444;
 }
 
-#screen {
+#display {
     box-sizing: border-box;
     min-width: 200px;
     font-size: 20px;
