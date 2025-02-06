@@ -99,7 +99,6 @@ function setup() {
 }
 
 function onKeyDown(evt) {
-    console.log(evt.key);
     // Numbers and dot.
     if ((evt.key >= "0" && evt.key <= "9") || evt.key == ".") {
         onNumberClicked(evt.key);
