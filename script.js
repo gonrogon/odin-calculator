@@ -60,7 +60,7 @@ function syncDisplay() {
 }
 
 function setDisplay(str) {
-    document.querySelector("#display").textContent = str;
+    document.querySelector("#display .text").textContent = str;
 }
 
 function setup() {

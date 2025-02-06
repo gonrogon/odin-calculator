@@ -35,6 +35,12 @@ body {
     background-color: #fdfdfd;
 }
 
+#display .error {
+    display: none;
+    color: rgb(226, 76, 76);
+    font-size: 16px;
+}
+
 .buttons {
     display: flex;
     flex-direction: column;
