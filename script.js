@@ -1,6 +1,16 @@
 let lhs = ""; // Left hand side operand 
 let rhs = ""; // Right hand side operand
 let operator = "";
+let operation = "";
+
+// Defines a diccionary to convert a operation identifier to an operator
+let idToOp = {
+    "div": "/",
+    "mul": "*",
+    "sub": "-",
+    "add": "+",
+    "eq" : "="
+}
 
 function add(a, b) {
     return a + b;
@@ -62,14 +72,21 @@ function onClick(evt) {
         return;
     }
 
+    const id    = evt.target.id;
     const value = evt.target.value;
 
-    if (value === 'C')          { onClearClicked(value); return; }
-    if (value.match(/[0-9]/))   { onNumberClicked(value); return; }
-    if (value.match(/[÷×−+=]/)) { onOperatorClicked(value); return; }
+    if (id === 'cls') {
+        onClearClicked();
+    } 
+    else if (id in idToOp) {
+        onOperatorClicked(id, value);
+    } 
+    else if (value.match(/[0-9]/)) {
+        onNumberClicked(value);
+    }
 }
 
-function onClearClicked(value) {
+function onClearClicked() {
     lhs = "";
     rhs = "";
     operator = "";
@@ -87,24 +104,17 @@ function onNumberClicked(value) {
     syncDisplay();
 }
 
-function onOperatorClicked(value) {
-    // Normalize the operators.
-    switch (value) {
-        case "÷": operator = "/"; break;
-        case "×": operator = "*"; break;
-        case "−": operator = "-"; break;
-        case "+": operator = "+"; break;
-
-        case "=":
-            if (lhs.length > 0 && rhs.length > 0) {
-                lhs = makeLongNumberShort(operate(operator, lhs, rhs).toString());
-                rhs = "";
-                operator = "";
-            }
-            break;
-        default: 
-            console.log("Invalid operator");
-            return;
+function onOperatorClicked(id, value) {
+    if (id === "eq") {
+        if (lhs.length > 0 && rhs.length > 0) {
+            lhs = makeLongNumberShort(operate(operation, lhs, rhs).toString());
+            rhs = "";
+            operator = "";
+        }
+    }
+    else {
+        operator  = value;
+        operation = idToOp[id];
     }
 
     syncDisplay();
