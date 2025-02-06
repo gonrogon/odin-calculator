@@ -42,7 +42,11 @@ function operate(operator, a, b) {
 }
 
 function syncDisplay() {
-    setDisplay(`${lhs} ${operator} ${rhs}`.trim());
+    if (lhs.length > 0 || rhs.length > 0 || operator > 0) {
+        setDisplay(`${lhs} ${operator} ${rhs}`.trim());
+    } else {
+        setDisplay("\u00A0");
+    }
 }
 
 function setDisplay(str) {
@@ -69,7 +73,7 @@ function onClearClicked(value) {
     lhs = "";
     rhs = "";
     operator = "";
-    setDisplay("\u00A0");
+    syncDisplay();
 }
 
 function onNumberClicked(value) {
@@ -96,8 +100,6 @@ function onOperatorClicked(value) {
                 lhs = makeLongNumberShort(operate(operator, lhs, rhs).toString());
                 rhs = "";
                 operator = "";
-
-                syncDisplay();
             }
             break;
         default: 
