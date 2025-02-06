@@ -99,6 +99,8 @@ function setup() {
 }
 
 function onKeyDown(evt) {
+    // Fix: prevent that key "enter" trigger a click event.
+    evt.preventDefault();
     // Numbers and dot.
     if ((evt.key >= "0" && evt.key <= "9") || evt.key == ".") {
         onNumberClicked(evt.key);
