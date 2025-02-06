@@ -57,10 +57,28 @@ function syncDisplay() {
     } else {
         setDisplay("\u00A0");
     }
+
+    clearDisplayError();
 }
 
 function setDisplay(str) {
     document.querySelector("#display .text").textContent = str;
+}
+
+function setDisplayError(str) {
+    let display = document.querySelector("#display");
+    let error   = document.querySelector("#display .error");
+
+    error.textContent   = str;
+    error.style.display = "block";
+}
+
+function clearDisplayError() {
+    let display = document.querySelector("#display");
+    let error   = document.querySelector("#display .error");
+
+    error.textContent = "";
+    error.style.display = "none";
 }
 
 function setup() {
@@ -90,6 +108,7 @@ function onClearClicked() {
     lhs = "";
     rhs = "";
     symbol = "";
+    operation = "";
     syncDisplay();
 }
 
@@ -106,18 +125,24 @@ function onNumberClicked(value) {
 
 function onOperatorClicked(id, value) {
     if (id === "eq") {
+        // Operation is complete.
         if (lhs.length > 0 && rhs.length > 0) {
-            lhs    = makeLongNumberShort(operate(operation, lhs, rhs).toString());
-            rhs    = "";
+            lhs = makeLongNumberShort(operate(operation, lhs, rhs).toString());
+            rhs = "";
             symbol = "";
+            operation = "";
+            syncDisplay();
+        }
+        // No righ hand side operand.
+        else if (lhs.length > 0 && operation.length > 0) {
+            setDisplayError("Malformed expression");
         }
     }
     else {
         symbol    = value;
         operation = idToOp[id];
+        syncDisplay();
     }
-
-    syncDisplay();
 }
 
 function makeLongNumberShort(str, length = 10) {
