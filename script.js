@@ -1,9 +1,9 @@
-let lhs = ""; // Left hand side operand 
-let rhs = ""; // Right hand side operand
-let operator = "";
-let operation = "";
+let lhs = "";       // Left hand side operand 
+let rhs = "";       // Right hand side operand
+let symbol = "";    // Symbol of the operation.
+let operation = ""; // Identifier of the operation to execute.
 
-// Defines a diccionary to convert a operation identifier to an operator
+// Defines a diccionary to convert an operation identifier to an operator
 let idToOp = {
     "div": "/",
     "mul": "*",
@@ -52,8 +52,8 @@ function operate(operator, a, b) {
 }
 
 function syncDisplay() {
-    if (lhs.length > 0 || rhs.length > 0 || operator > 0) {
-        setDisplay(`${lhs} ${operator} ${rhs}`.trim());
+    if (lhs.length > 0 || rhs.length > 0 || symbol > 0) {
+        setDisplay(`${lhs} ${symbol} ${rhs}`.trim());
     } else {
         setDisplay("\u00A0");
     }
@@ -68,7 +68,7 @@ function setup() {
 }
 
 function onClick(evt) {
-    if (!("value" in evt.target)) {
+    if (!(evt.target instanceof HTMLInputElement)) {
         return;
     }
 
@@ -89,12 +89,12 @@ function onClick(evt) {
 function onClearClicked() {
     lhs = "";
     rhs = "";
-    operator = "";
+    symbol = "";
     syncDisplay();
 }
 
 function onNumberClicked(value) {
-    if (operator.length == 0) {
+    if (symbol.length == 0) {
         lhs += value;
     }
     else {
@@ -107,13 +107,13 @@ function onNumberClicked(value) {
 function onOperatorClicked(id, value) {
     if (id === "eq") {
         if (lhs.length > 0 && rhs.length > 0) {
-            lhs = makeLongNumberShort(operate(operation, lhs, rhs).toString());
-            rhs = "";
-            operator = "";
+            lhs    = makeLongNumberShort(operate(operation, lhs, rhs).toString());
+            rhs    = "";
+            symbol = "";
         }
     }
     else {
-        operator  = value;
+        symbol    = value;
         operation = idToOp[id];
     }
 
