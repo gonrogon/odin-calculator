@@ -64,7 +64,7 @@ function resetState(lhsValue = "") {
 }
 
 function syncDisplay() {
-    if (lhs.length > 0 || rhs.length > 0 || symbol > 0) {
+    if (lhs.length > 0 || rhs.length > 0 || operation > 0) {
         setDisplay(`${lhs} ${symbol} ${rhs}`.trim());
     } else {
         setDisplay("\u00A0");
@@ -107,7 +107,10 @@ function onClick(evt) {
 
     if (id === 'cls') {
         onClearClicked();
-    } 
+    }
+    else if (id === 'backspace') {
+        onBackspaceClicked();
+    }
     else if (id in idToOp) {
         onOperatorClicked(id, value);
     } 
@@ -124,8 +127,25 @@ function onClearClicked() {
     syncDisplay();
 }
 
+function onBackspaceClicked() {
+    if (rhs.length > 0) {
+        rhs = rhs.slice(0, -1);
+    }
+    else if (operation.length > 0) {
+        operation = "";
+        symbol    = "";
+    }
+    else if (lhs.length > 0) {
+        lhs = lhs.slice(0, -1);
+    }
+
+    lhsIsResult  = false;
+    rhsDivByZero = false;
+    syncDisplay();
+}
+
 function onNumberClicked(value) {
-    if (symbol.length == 0) {
+    if (operation.length == 0) {
         if (lhsIsResult) {
             lhs = value;
             lhsIsResult = false;
