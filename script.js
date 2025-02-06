@@ -4,6 +4,8 @@ let symbol = "";    // Symbol of the operation.
 let operation = ""; // Identifier of the operation to execute.
 // Flag indicating whether the left hand side operand is the result of a previous operation or not.
 let lhsIsResult = false;
+// Flag indicartin whether the right hand side operand has raised a division by zero error.
+let rhsDivByZero = false;
 // Defines a diccionary to convert an operation identifier to an operator
 let idToOp = {
     "div": "/",
@@ -50,6 +52,15 @@ function operate(operator, a, b) {
         case "*": return multiply(a, b);
         case "/": return divide(a, b);
     }
+}
+
+function resetState(lhsValue = "") {
+    lhs = lhsValue;
+    rhs = "";
+    symbol = "";
+    operation = "";
+    lhsIsResult  = false;
+    rhsDivByZero = false;
 }
 
 function syncDisplay() {
@@ -106,11 +117,7 @@ function onClick(evt) {
 }
 
 function onClearClicked() {
-    lhs = "";
-    rhs = "";
-    symbol = "";
-    operation = "";
-    lhsIsResult = false;
+    resetState();
     syncDisplay();
 }
 
@@ -124,7 +131,12 @@ function onNumberClicked(value) {
         }
     }
     else {
-        rhs += value;
+        if (rhsDivByZero) {
+            rhs = value;
+            rhsDivByZero = false;
+        } else {
+            rhs += value;
+        }
     }
 
     syncDisplay();
@@ -132,25 +144,45 @@ function onNumberClicked(value) {
 
 function onOperatorClicked(id, value) {
     if (id === "eq") {
-        // Operation is complete.
-        if (lhs.length > 0 && rhs.length > 0) {
-            lhs = makeLongNumberShort(operate(operation, lhs, rhs).toString());
-            rhs = "";
-            symbol = "";
-            operation = "";
-            lhsIsResult = true;
-            syncDisplay();
-        }
-        // No righ hand side operand.
-        else if (lhs.length > 0 && operation.length > 0) {
-            setDisplayError("Malformed expression");
-        }
+        executeOperation();
     }
     else {
+        if (lhs.length > 0 && rhs.length > 0) {
+            if (!executeOperation()) {
+                return;
+            }
+        }
         symbol    = value;
         operation = idToOp[id];
         syncDisplay();
     }
+}
+
+function executeOperation() {
+    // Check if the operation is complete.
+    if (lhs.length > 0 && rhs.length > 0) {
+        // Division by zero.
+        if (operation === "/" && rhs === "0") {
+            setDisplayError("Division by zero is not defined");
+            rhsDivByZero = true;
+            return false;
+        }
+        // Execute the operation.
+        else {
+            const result = makeLongNumberShort(operate(operation, lhs, rhs).toString());
+            resetState(result);
+            syncDisplay();
+        }
+    }
+    else {
+        // Check if the operation is missing the right hand side operand.
+        if (lhs.length > 0 && operation.length > 0) {
+            setDisplayError("Malformed expression");
+            return false;
+        }
+    }
+
+    return true
 }
 
 function makeLongNumberShort(str, length = 10) {
