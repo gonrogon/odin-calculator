@@ -2,7 +2,8 @@ let lhs = "";       // Left hand side operand
 let rhs = "";       // Right hand side operand
 let symbol = "";    // Symbol of the operation.
 let operation = ""; // Identifier of the operation to execute.
-
+// Flag indicating whether the left hand side operand is the result of a previous operation or not.
+let lhsIsResult = false;
 // Defines a diccionary to convert an operation identifier to an operator
 let idToOp = {
     "div": "/",
@@ -109,12 +110,18 @@ function onClearClicked() {
     rhs = "";
     symbol = "";
     operation = "";
+    lhsIsResult = false;
     syncDisplay();
 }
 
 function onNumberClicked(value) {
     if (symbol.length == 0) {
-        lhs += value;
+        if (lhsIsResult) {
+            lhs = value;
+            lhsIsResult = false;
+        } else {
+            lhs += value;
+        }
     }
     else {
         rhs += value;
@@ -131,6 +138,7 @@ function onOperatorClicked(id, value) {
             rhs = "";
             symbol = "";
             operation = "";
+            lhsIsResult = true;
             syncDisplay();
         }
         // No righ hand side operand.
