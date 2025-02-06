@@ -93,13 +93,9 @@ function onOperatorClicked(value) {
 
         case "=":
             if (lhs.length > 0 && rhs.length > 0) {
-                lhs = operate(operator, lhs, rhs).toString();
+                lhs = makeLongNumberShort(operate(operator, lhs, rhs).toString());
                 rhs = "";
                 operator = "";
-
-                if (lhs.length > 4) {
-                    lhs = (Math.round(parseFloat(lhs) * 1000) / 1000).toString();
-                }
 
                 syncDisplay();
             }
@@ -110,6 +106,31 @@ function onOperatorClicked(value) {
     }
 
     syncDisplay();
+}
+
+function makeLongNumberShort(str, length = 10) {
+    const BIG_LENGTH = 1;
+    const DOT_LENGTH = 1;
+    const big        = parseFloat("9".repeat(length));
+    const number     = parseFloat(str);
+
+    if (str.length > length) {
+        // Big numbers are transformed to exponential notation.
+        if (number > big) {
+            str = number.toExponential(length - DOT_LENGTH - BIG_LENGTH);
+        }
+        // Other numbers are round to fit in the maximum length.
+        else {
+            const index = str.indexOf(".");
+            const numberIntegerLength = index;
+            const numberDecimalLength = str.length - index - DOT_LENGTH;
+            const numberOfDecimals = Math.min(numberDecimalLength, length - numberIntegerLength - DOT_LENGTH);
+
+            str = number.toFixed(numberOfDecimals);
+        }
+    }
+
+    return str;
 }
 
 setup();
