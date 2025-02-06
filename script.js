@@ -159,9 +159,12 @@ function onOperatorClicked(id, value) {
                 return;
             }
         }
-        symbol    = value;
-        operation = idToOp[id];
-        syncDisplay();
+        // Fix: if there is no left hand side operand, the operator is ignored.
+        else if (lhs.length > 0) {
+            symbol    = value;
+            operation = idToOp[id];
+            syncDisplay();
+        }
     }
 }
 
