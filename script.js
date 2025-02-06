@@ -95,6 +95,28 @@ function clearDisplayError() {
 
 function setup() {
     document.querySelector("#calculator").addEventListener("click", onClick);
+    document.addEventListener("keydown", onKeyDown);
+}
+
+function onKeyDown(evt) {
+    console.log(evt.key);
+    // Numbers and dot.
+    if ((evt.key >= "0" && evt.key <= "9") || evt.key == ".") {
+        onNumberClicked(evt.key);
+        return;
+    }
+    // Operators.
+    for (let prop in idToOp) {
+        if (evt.key === idToOp[prop]) {
+            onOperatorClicked(prop, evt.key)
+            return;
+        }
+    }
+    // Other keys.
+    switch (evt.key) {
+        case "Enter": onOperatorClicked("eq", "="); break;
+        case "Backspace": onBackspaceClicked(); break;
+    }
 }
 
 function onClick(evt) {
