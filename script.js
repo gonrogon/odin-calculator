@@ -114,6 +114,9 @@ function onClick(evt) {
     else if (value.match(/[0-9]/)) {
         onNumberClicked(value);
     }
+    else if (value === "·") {
+        onNumberClicked(".");
+    }
 }
 
 function onClearClicked() {
@@ -127,7 +130,9 @@ function onNumberClicked(value) {
             lhs = value;
             lhsIsResult = false;
         } else {
-            lhs += value;
+            if (value !== "." || !lhs.includes(".")) {
+                lhs += value;
+            }
         }
     }
     else {
@@ -135,7 +140,9 @@ function onNumberClicked(value) {
             rhs = value;
             rhsDivByZero = false;
         } else {
-            rhs += value;
+            if (value !== "." || !rhs.includes(".")) {
+                rhs += value;
+            }
         }
     }
 
